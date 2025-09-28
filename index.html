@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposter Games</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Imposter Games</h1>
+        <h3>By degniez</h3>
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen" class="screen active">
+            <h2>Choose Your Role</h2>
+            <div class="main-options">
+                <button id="host-game-btn" class="main-btn">
+                    <h3>🎮 Host Game</h3>
+                    <p>Create a room and choose the game type</p>
+                </button>
+                <button id="join-game-btn" class="main-btn">
+                    <h3>📱 Join Game</h3>
+                    <p>Enter a join code to play</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Host Game Selection Screen -->
+        <div id="host-game-selection-screen" class="screen">
+            <h2>Choose Your Game</h2>
+            <button id="category-game-btn">Imposter Category Game</button>
+            <button id="question-game-btn">Hidden Question Game</button>
+            <button class="back-to-menu">Back to Menu</button>
+        </div>
+
+        <!-- Join Game Screen -->
+        <div id="join-game-screen" class="screen">
+            <h2>Join Game</h2>
+            <div class="form-container">
+                <input type="text" id="join-code-input" placeholder="Enter 6-letter room code" maxlength="6">
+                <input type="text" id="join-player-name" placeholder="Enter your name">
+                <button id="join-game-submit-btn">Join Game</button>
+            </div>
+            <button class="back-to-menu">Back to Menu</button>
+        </div>
+
+        <!-- Room Selection Screen (for hosting only) -->
+        <div id="room-selection-screen" class="screen">
+            <h2 id="room-game-title">Game Setup</h2>
+            <div class="room-options">
+                <button id="create-room-btn" class="room-btn">
+                    <h3>🎮 Create Room</h3>
+                    <p>Set up your game room</p>
+                </button>
+            </div>
+            <button class="back-to-host-selection">Back</button>
+        </div>
+
+        <!-- Create Room Screen -->
+        <div id="create-room-screen" class="screen">
+            <h2>Host Game</h2>
+            <div class="input-group">
+                <label for="host-name">Your Name:</label>
+                <input type="text" id="host-name" placeholder="Enter your name" maxlength="20">
+            </div>
+            <button id="create-room-submit-btn">Create Room</button>
+            <button class="back-btn" onclick="goToRoomSelection()">Back</button>
+        </div>
+
+        <!-- Join Room Screen -->
+        <div id="join-room-screen" class="screen">
+            <h2>Join Game</h2>
+            <div class="input-group">
+                <label for="join-code">Room Code:</label>
+                <input type="text" id="join-code" placeholder="Enter 6-letter code" maxlength="6" style="text-transform: uppercase;">
+            </div>
+            <div class="input-group">
+                <label for="player-name">Your Name:</label>
+                <input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
+            </div>
+            <button id="join-room-submit-btn">Join Room</button>
+            <button class="back-btn" onclick="goToRoomSelection()">Back</button>
+        </div>
+
+        <!-- Waiting Room Screen -->
+        <div id="waiting-room-screen" class="screen">
+            <h2>Room: <span id="room-code-display"></span></h2>
+            <div class="room-info">
+                <p>Share this code with your friends!</p>
+                <div class="join-code-box">
+                    <span id="join-code-display"></span>
+                    <button id="copy-code-btn" onclick="copyRoomCode()">📋 Copy</button>
+                </div>
+            </div>
+            <div class="players-section">
+                <h3>Players (<span id="player-count-display">0</span>):</h3>
+                <div id="players-list"></div>
+                <p class="min-players-note">Need at least 4 players to start</p>
+            </div>
+            <button id="start-game-from-room-btn" style="display: none;">Start Game</button>
+            <div id="waiting-message" style="display: none;">
+                <p>Waiting for host to start the game...</p>
+            </div>
+        </div>
+
+        <!-- Player Role Screen -->
+        <div id="player-role-screen" class="screen">
+            <h2 id="role-screen-title">Your Role</h2>
+            <div id="role-waiting">
+                <p>Game starting... Click to see your role!</p>
+                <button id="get-role-btn">Show My Role</button>
+            </div>
+            <div id="role-display" style="display: none;">
+                <h3 id="role-type"></h3>
+                <p id="role-info"></p>
+                <div id="role-actions">
+                    <button id="ready-btn">I'm Ready!</button>
+                </div>
+            </div>
+            <div id="waiting-for-others" style="display: none;">
+                <p>Waiting for other players to see their roles...</p>
+            </div>
+        </div>
+
+        <!-- Questions Revelation Screen -->
+        <div id="questions-revelation-screen" class="screen">
+            <h2>Question Revelation</h2>
+            <div class="container">
+                <p><strong>The question most players got:</strong></p>
+                <p id="question-a-display"></p>
+                <p style="margin-top: 2rem;">Now everyone knows what the majority question was! Can you figure out who had the different question?</p>
+            </div>
+            <div id="host-revelation-controls" style="display: none;">
+                <button id="start-voting-from-revelation-btn">Start Voting</button>
+            </div>
+            <div id="player-revelation-waiting" style="display: none;">
+                <p>Waiting for host to start voting...</p>
+            </div>
+        </div>
+
+        <!-- Game Phase Screen -->
+        <div id="game-phase-screen" class="screen">
+            <div id="host-controls" style="display: none;">
+                <h2>Game Control</h2>
+                <p>All players have their roles!</p>
+                <button id="start-phase-btn">Start Game Phase</button>
+            </div>
+            <div id="player-waiting" style="display: none;">
+                <h2>Get Ready!</h2>
+                <p id="phase-description">Waiting for host to start the game phase...</p>
+            </div>
+        </div>
+
+        <!-- Animation Screen (for both games) -->
+        <div id="animation-screen" class="screen">
+            <h2 id="animation-title"></h2>
+            <p id="animation-context"></p>
+            <div class="container">
+                <p id="animation-player-turn"></p>
+            </div>
+            <button id="cg-go-to-voting-btn" class="btn" style="display: none;">Proceed to Voting</button>
+            <button id="qg-go-to-voting-btn" class="btn" style="display: none;">Proceed to Voting</button>
+        </div>
+
+        <!-- Voting Screen -->
+        <div id="voting-screen" class="screen">
+            <h2>Time to Vote!</h2>
+            <p>Who do you think is the imposter?</p>
+            <div id="player-vote-buttons"></div>
+            <div id="vote-status">
+                <p id="vote-status-message">Make your vote!</p>
+            </div>
+            <div id="host-voting-controls" style="display: none;">
+                <h3>Vote Summary</h3>
+                <div id="vote-summary"></div>
+                <button id="reveal-results-btn" style="display: none;">Reveal Results</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <div class="container">
+                <h2 id="results-title"></h2>
+                <div id="results-content">
+                    <p id="results-message"></p>
+                    <div id="results-details"></div>
+                </div>
+                <div id="host-end-controls" style="display: none;">
+                    <button id="play-again-btn" class="btn">Play Again</button>
+                    <button id="end-game-btn" class="btn">End Game</button>
+                </div>
+                <div id="player-end-waiting" style="display: none;">
+                    <p>Waiting for host to decide next action...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Screen -->
+        <div id="error-screen" class="screen">
+            <div class="container">
+                <h2>⚠️ Error</h2>
+                <p id="error-message"></p>
+                <button onclick="showMainMenu()" class="btn">Back to Main Menu</button>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
